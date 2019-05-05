@@ -41,18 +41,18 @@ class Robo:
     def moverAutomatico(self, tesX, tesY):
         if tesX > self.posX:
             self.goLeste(tesX)
-        else:
+        elif tesX < self.posX:
             self.goOeste(tesX)
 
         if tesY > self.posY:
             self.goNorte(tesY)
-        else:
+        elif tesY < self.posY:
             self.goSul(tesY)
 
-        print('Chegou na caça!')
-        print('Pos atual robo:')
-        print('PosX: ' + self.posX )
-        print('PosY: ' + self.posY )
+
+        print('PosAtualX: ' + self.posX )
+        print('PosAtualY: ' + self.posY )
+        print('Sentido Atual:' + self.sentido)
 
     def goLeste(self, x):
         if self.sentido == 'N':
@@ -134,7 +134,6 @@ class Robo:
                 self.l.run_forever(speed_sp=self.velocidade)
             else:
                 self.setParar()
-                ## Colocar o resto do codico no else
 
         if self.colors[self.cl.value()] == "unknown":
             while self.colors[self.cl.value()] != "black":
@@ -185,7 +184,6 @@ class Robo:
             self.r.run_forever(speed_sp=self.velocidade)
 
         else:
-            #sleep(0.1)
             self.setParar()
 
         self.setParar()
@@ -223,8 +221,6 @@ class Robo:
         else:
             self.l.run_forever(speed_sp=self.velocidade)
 
-        #self.setParar()
-
         self.moverFrente()
 
         #atualizando sentido
@@ -245,17 +241,11 @@ class Robo:
         self.cl.mode = 'COL-COLOR'
         while self.colors[self.cl.value()] == "green":
             self.l.run_forever(speed_sp=-self.velocidade)
-           #self.r.run_forever(speed_sp=-self.velocidade/2)
-
-        #sleep(0.1)
-        #self.setParar()
 
         while self.colors[self.cl.value()] == "black":
-            #			self.r.run_forever(speed_sp=self.velocidade)
             self.l.run_forever(speed_sp=-self.velocidade)
 
         while self.colors[self.cl.value()] != "black":
-            #self.setParar()
             self.l.run_forever(speed_sp=-self.velocidade)
 
         self.setParar()
