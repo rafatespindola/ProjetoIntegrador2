@@ -36,19 +36,6 @@ class Robo:
         else:
             print('Somente permitidos N ou S ou L ou O para sentido')
 
-    #posicao tesouro >>>> (tesX, tesY)
-    #posicao robo    >>>> (posX, posY)
-    # def moverAutomatico(self, tesX, tesY):
-    #     if tesX > self.posX:
-    #         self.goLeste(tesX)
-    #     elif tesX < self.posX:
-    #         self.goOeste(tesX)
-
-    #     if tesY > self.posY:
-    #         self.goNorte(tesY)
-    #     elif tesY < self.posY:
-    #         self.goSul(tesY)
-
     def moverAutomatico(self, l):
         for index in l:
             tesX = index[0]
@@ -202,16 +189,12 @@ class Robo:
         #atualizando sentido
         if self.sentido == 'N':
             self.sentido = 'O'
-            #self.posX -= 1
         elif self.sentido == 'O':
             self.sentido = 'S'
-            #self.posY -= 1
         elif self.sentido == 'S':
             self.sentido = 'L'
-            #self.posX += 1
         elif self.sentido == 'L':
             self.sentido = 'N'
-            #self.posY += 1
 
         self.moverFrente()
 
@@ -235,16 +218,12 @@ class Robo:
         #atualizando sentido
         if self.sentido == 'N':
             self.sentido = 'L'
-            #self.posX += 1
         elif self.sentido == 'L':
             self.sentido = 'S'
-            #self.posY -= 1
         elif self.sentido == 'S':
             self.sentido = 'O'
-            #self.posX -= 1
         elif self.sentido == 'O':
             self.sentido = 'N'
-            #self.posY += 1
 
         self.moverFrente()
 
@@ -263,18 +242,14 @@ class Robo:
 
         self.setParar()
 
-            #atualizando sentido
+        #atualizando sentido
         if self.sentido == 'N':
             self.sentido = 'S'
-            #self.posY -= 1
         elif self.sentido == 'S':
             self.sentido = 'N'
-            #self.posY += 1
         elif self.sentido == 'O':
             self.sentido = 'L'
-            #self.posX += 1
         elif self.sentido == 'L':
             self.sentido = 'O'
-            #self.posX -= 1
 
         self.moverFrente()
