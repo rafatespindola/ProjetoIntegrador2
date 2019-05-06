@@ -21,7 +21,7 @@ class Robo:
         return self.color
 
     def setVel(self, vel):
-        if vel < 1000 & vel > 0:
+        if vel < 1000 and vel > 0:
             self.velocidade = vel
         else:
             print('Somente valores de 0 a 999')
@@ -38,21 +38,31 @@ class Robo:
 
     #posicao tesouro >>>> (tesX, tesY)
     #posicao robo    >>>> (posX, posY)
-    def moverAutomatico(self, tesX, tesY):
-        if tesX > self.posX:
-            self.goLeste(tesX)
-        elif tesX < self.posX:
-            self.goOeste(tesX)
+    # def moverAutomatico(self, tesX, tesY):
+    #     if tesX > self.posX:
+    #         self.goLeste(tesX)
+    #     elif tesX < self.posX:
+    #         self.goOeste(tesX)
 
-        if tesY > self.posY:
-            self.goNorte(tesY)
-        elif tesY < self.posY:
-            self.goSul(tesY)
+    #     if tesY > self.posY:
+    #         self.goNorte(tesY)
+    #     elif tesY < self.posY:
+    #         self.goSul(tesY)
 
+    def moverAutomatico(self, l):
+        for index in l:
+            tesX = index[0]
+            tesY = index[1]
 
-        #print('PosAtualX: ' + self.posX )
-        #print('PosAtualY: ' + self.posY )
-        #print('Sentido Atual:' + self.sentido)
+            if tesX > self.posX:
+                self.goLeste(tesX)
+            elif tesX < self.posX:
+                self.goOeste(tesX)
+
+            if tesY > self.posY:
+                self.goNorte(tesY)
+            elif tesY < self.posY:
+                self.goSul(tesY)
 
     def goLeste(self, x):
         if self.sentido == 'N':
@@ -189,7 +199,6 @@ class Robo:
 
         self.setParar()
 
-        #if self.colors[self.cl.value()] == "green":
         #atualizando sentido
         if self.sentido == 'N':
             self.sentido = 'O'
@@ -223,7 +232,6 @@ class Robo:
         else:
             self.l.run_forever(speed_sp=self.velocidade)
 
-        #if self.colors[self.cl.value()] == "green":
         #atualizando sentido
         if self.sentido == 'N':
             self.sentido = 'L'
@@ -255,7 +263,6 @@ class Robo:
 
         self.setParar()
 
-        #if self.colors[self.cl.value()] == "green":
             #atualizando sentido
         if self.sentido == 'N':
             self.sentido = 'S'

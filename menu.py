@@ -31,8 +31,15 @@ while (comando != "exit"):
 		cor = input("Cor: ")
 
 	elif comando == 'auto':
-		posX = int(input('PosX tesouro: '))
-		posY = int(input('PosY tesouro: '))
-		robot.moverAutomatico(posX, posY)
+		l = []
+		ans = 's'
+		while ans == 's':
+			posX = int(input('PosX tesouro: '))
+			posY = int(input('PosY tesouro: '))
+			coord = posX, posY
+			l.append(coord)
+			ans = input('Continuar? [s]')
+
+		robot.moverAutomatico(l)
 
 	comando = input("comando: ")
