@@ -1,4 +1,4 @@
-from Robo import *
+import Robo
 
 cor     = input('Cor: ')
 sentido = input('Sentido: ')
@@ -6,8 +6,11 @@ vel     = int(input('Velocidade: '))
 posX    = int(input('PosX: '))
 posY    = int(input('PosY: '))
 comando = input("Comando: ")
+mac     = 'a0:f3:c1:0b:3c:48'
+lcaca   = l[]
 
-robot = Robo(vel, cor, sentido, posX, posY)
+#iniciar robo
+robot = Robo(vel, cor, sentido, posX, posY, lcaca, mac)
 
 while (comando != "exit"):
 
@@ -41,5 +44,11 @@ while (comando != "exit"):
 			ans = input('Continuar? [s]')
 
 		robot.moverAutomatico(l)
+
+	elif comando == 'Pausar':
+		robot.pausar()
+
+	elif comando == 'Identificar':
+		robot.getId()
 
 	comando = input("comando: ")

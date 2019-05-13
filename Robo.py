@@ -2,17 +2,33 @@ from ev3dev.ev3 import *
 from time import sleep
 
 class Robo:
-    def __init__(self, vel, cor, sentido, posX, posY):
+    def __init__(self, vel, cor, sentido, posX, posY, lcaca, mac):
         self.velocidade = vel
         self.l          = LargeMotor('outA')# esquerda
         self.r          = LargeMotor('outD')# direita
         self.cl         = ColorSensor()
         self.colors     = ('unknown', 'black', 'blue', 'green', 'yellow', 'red', 'white', 'brown')
-        self.id         = 'a0:f3:c1:0b:3c:48'
+        self.id         = mac #'a0:f3:c1:0b:3c:48'
         self.cor        = cor
         self.sentido    = sentido
         self.posX       = posX
         self.posY       = posY
+        self.lcaca      = lcaca
+
+
+    #deve-se finalizar esta def
+    def obterCaca(self):
+        coord = self.posX, self.posY
+        if coord in self.lcaca:
+            pass
+            #Aqui o robo deve enviar uma msg para SS informando que encontrou uma caça
+            #aqui o robo deve usar uma função desta classe para enviar a msg
+            #esta funcao de enviar msg ainda n foi criada
+
+    def atualizarMapa(self):
+        #enviar coord do robo
+        #verificar se a caça que esta sendo procurada ainda n foi caçada
+        pass
 
     def getId(self):
         return self.id
@@ -26,7 +42,7 @@ class Robo:
         else:
             print('Somente valores de 0 a 999')
 
-    def setParar(self):
+    def setPausar(self):
         self.r.stop(stop_action="hold")
         self.l.stop(stop_action="hold")
 
@@ -36,8 +52,9 @@ class Robo:
         else:
             print('Somente permitidos N ou S ou L ou O para sentido')
 
-    def moverAutomatico(self, l):
-        for index in l:
+    def moverAutomatico(self):
+
+        for index in self.lcaca:
             tesX = index[0]
             tesY = index[1]
 
@@ -130,7 +147,7 @@ class Robo:
                 self.r.run_forever(speed_sp=self.velocidade)
                 self.l.run_forever(speed_sp=self.velocidade)
             else:
-                self.setParar()
+                self.setPausar()
 
         if self.colors[self.cl.value()] == "unknown":
             while self.colors[self.cl.value()] != "black":
@@ -162,7 +179,7 @@ class Robo:
             self.r.run_forever(speed_sp=self.velocidade)
             sleep(0.1)
 
-        self.setParar()
+        self.setPausar()
 
         if self.colors[self.cl.value()] == "green":
             #atualizando sentido
@@ -182,9 +199,9 @@ class Robo:
             self.r.run_forever(speed_sp=self.velocidade)
 
         else:
-            self.setParar()
+            self.setPausar()
 
-        self.setParar()
+        self.setPausar()
 
         #atualizando sentido
         if self.sentido == 'N':
@@ -240,7 +257,7 @@ class Robo:
         while self.colors[self.cl.value()] != "black":
             self.l.run_forever(speed_sp=-self.velocidade)
 
-        self.setParar()
+        self.setPausar()
 
         #atualizando sentido
         if self.sentido == 'N':
