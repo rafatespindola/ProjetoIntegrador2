@@ -6,11 +6,10 @@ vel     = int(input('Velocidade: '))
 posX    = int(input('PosX: '))
 posY    = int(input('PosY: '))
 comando = input("Comando: ")
-mac     = 'a0:f3:c1:0b:3c:48'
 lcaca   = l[]
 
 #iniciar robo
-robot = Robo(vel, cor, sentido, posX, posY, lcaca, mac)
+robot = Robo(vel, cor, sentido, posX, posY, lcaca)
 
 while (comando != "exit"):
 

@@ -2,19 +2,22 @@ from ev3dev.ev3 import *
 from time import sleep
 
 class Robo:
-    def __init__(self, vel, cor, sentido, posX, posY, lcaca, mac):
+    def __init__(self, vel, cor, sentido, posX, posY, lcaca):
         self.velocidade = vel
         self.l          = LargeMotor('outA')# esquerda
         self.r          = LargeMotor('outD')# direita
         self.cl         = ColorSensor()
         self.colors     = ('unknown', 'black', 'blue', 'green', 'yellow', 'red', 'white', 'brown')
-        self.id         = mac #'a0:f3:c1:0b:3c:48'
+        self.id         = 'a0:f3:c1:0b:3c:48'
         self.cor        = cor
         self.sentido    = sentido
         self.posX       = posX
         self.posY       = posY
         self.lcaca      = lcaca
 
+    #envia para SS as coordenadas de SR
+    def atualizarSS(self):
+        pass
 
     #deve-se finalizar esta def
     def obterCaca(self):
