@@ -1,8 +1,12 @@
 from ev3dev.ev3 import *
-from time import sleep
+import time
+from Treasure import *
+import threading
 
-class Robo:
-    def __init__(self, vel, cor, sentido, posX, posY, lcaca):
+class Robo(threading.Thread):
+
+    def __init__(self, vel, cor, modo,  sentido, posin, l):
+        threading.Thread.__init__(self)
         self.velocidade = vel
         self.l          = LargeMotor('outA')# esquerda
         self.r          = LargeMotor('outD')# direita
@@ -11,33 +15,70 @@ class Robo:
         self.id         = 'a0:f3:c1:0b:3c:48'
         self.cor        = cor
         self.sentido    = sentido
-        self.posX       = posX
-        self.posY       = posY
-        self.lcaca      = lcaca
+        posX = posin[0]
+        posY = posin[2]
+        self.modo = modo
+        self.posX       = int(posX)
+        self.posY       = int(posY)
+        self.treasure = Treasure(l)
+        self.parado = True
+        self.estounacaca = False
+        self.goal = 0
 
-    #envia para SS as coordenadas de SR
-    def atualizarSS(self):
-        pass
+        self.setPausar()
 
-    #deve-se finalizar esta def
+    def isNacaca(self):
+        return self.estounacaca
+
+    def run(self):
+        self.moverAutomatico()
+
+    def getPos(self):
+        return (str(self.posX) + ":" + str(self.posY))
+
+    def isParado(self):
+        return self.parado
+
+    def setLista(self,lista):
+        #comparar com a que ja está no robo, e se a caça que ele esta ido atras ainda existe
+        self.treasure = Treasure(lista)
+
+    def command(self, comando):
+        if comando in 'Ww':
+            self.moverFrente()
+
+        elif comando in 'Aa':
+            self.moverEsquerda()
+
+        elif comando in 'Ss':
+            self.moverRetornar()
+
+        elif comando in 'Dd':
+            self.moverDireita()
+
+        elif comando in 'Vv':
+            self.obterCaca()
+
+    # #deve-se finalizar esta def
     def obterCaca(self):
-        coord = self.posX, self.posY
-        if coord in self.lcaca:
-            pass
+        self.estounacaca = True
+        #coord = self.posX, self.posY
+        #if coord in self.lcaca:
+            #pass
             #Aqui o robo deve enviar uma msg para SS informando que encontrou uma caça
             #aqui o robo deve usar uma função desta classe para enviar a msg
             #esta funcao de enviar msg ainda n foi criada
 
     def atualizarMapa(self):
-        #enviar coord do robo
+
+        pass#     #enviar coord do robo
         #verificar se a caça que esta sendo procurada ainda n foi caçada
-        pass
 
     def getId(self):
         return self.id
 
     def getColor(self):
-        return self.color
+        return self.cor
 
     def setVel(self, vel):
         if vel < 1000 and vel > 0:
@@ -57,19 +98,34 @@ class Robo:
 
     def moverAutomatico(self):
 
-        for index in self.lcaca:
-            tesX = index[0]
-            tesY = index[1]
+        lcaca = self.treasure.getList()
+        # ['1:1', '2:3', '5:2', '6:6', '4:3', '2:1']
+        print(self.treasure.getString())
+        while lcaca:
+            self.goal = lcaca.pop()
+            lcaca.append(self.goal)
+            print(str(self.goal))
+            tesX = int(self.goal[0])
+            tesY = int(self.goal[2])
 
             if tesX > self.posX:
                 self.goLeste(tesX)
+                print("indo leste")
             elif tesX < self.posX:
                 self.goOeste(tesX)
+                print("indo oeste")
 
             if tesY > self.posY:
                 self.goNorte(tesY)
+                print("indo norte")
             elif tesY < self.posY:
                 self.goSul(tesY)
+                print("indo sul")
+            print("Cheguei na caca irmao")
+            self.pop()
+            self.parado = True
+        print("acabou cacas")
+
 
     def goLeste(self, x):
         if self.sentido == 'N':
@@ -101,7 +157,7 @@ class Robo:
         elif self.sentido == 'S':
             self.moverDireita()
             while x < self.posX:
-                self.moverFrente
+                self.moverFrente()
         elif self.sentido == 'O':
             while x < self.posX:
                 self.moverFrente()
@@ -117,7 +173,7 @@ class Robo:
         elif self.sentido == 'N':
             self.moverRetornar()
             while y < self.posY:
-                self .moverFrente
+                self .moverFrente()
         elif self.sentido == 'L':
             self.moverDireita()
             while y < self.posY:
@@ -142,6 +198,11 @@ class Robo:
 
 
     def moverFrente(self):
+        self.parado = False
+        print("movendo frente")
+        #time.sleep(10)
+        #self.parado = True
+        print("Indo para frente")
         self.cl.mode = 'COL-COLOR'
         if self.colors[self.cl.value()] == "green" or self.colors[self.cl.value()] == "yellow" or self.colors[
             self.cl.value()] == "blue":
@@ -168,19 +229,19 @@ class Robo:
             if self.colors[self.cl.value()] == "yellow":
                 self.l.run_forever(speed_sp=self.velocidade)
                 self.r.run_forever(speed_sp=self.velocidade)
-                sleep(0.1)
+                time.sleep(0.1)
                 break
 
             if self.colors[self.cl.value()] == "blue":
                 self.l.run_forever(speed_sp=self.velocidade)
                 self.r.run_forever(speed_sp=self.velocidade)
-                sleep(0.1)
+                time.sleep(0.1)
                 break
 
         else:
             self.l.run_forever(speed_sp=self.velocidade)
             self.r.run_forever(speed_sp=self.velocidade)
-            sleep(0.1)
+            time.sleep(0.1)
 
         self.setPausar()
 
@@ -194,11 +255,16 @@ class Robo:
                 self.posX += 1
             elif self.sentido == 'N':
                 self.posY += 1
+        self.parado = True
+        print("Posicao atual " + self.getPos())
+
 
     def moverEsquerda(self):
+        self.parado = False
+        print("Indo para esquerda")
         self.cl.mode = 'COL-COLOR'
         while self.colors[self.cl.value()] != "black":
-            self.l.run_forever(speed_sp=-self.velocidade/2)
+            self.l.run_forever(speed_sp=0)
             self.r.run_forever(speed_sp=self.velocidade)
 
         else:
@@ -217,23 +283,35 @@ class Robo:
             self.sentido = 'N'
 
         self.moverFrente()
+        self.parado = True
 
     def moverDireita(self):
+        self.parado = False
+        print("Indo para direita")
         self.cl.mode = 'COL-COLOR'
         while self.colors[self.cl.value()] == "green":
-            self.l.run_forever(speed_sp=self.velocidade)
-            self.r.run_forever(speed_sp=self.velocidade/2)
+           self.l.run_forever(speed_sp=self.velocidade)
+           self.r.run_forever(speed_sp=self.velocidade)
         else:
             self.r.stop(stop_action="hold")
 
+        #print(self.cl.value())
+
         while self.colors[self.cl.value()] == "black":
             self.l.run_forever(speed_sp=self.velocidade)
+            self.r.run_forever(speed_sp=0)
+
+       # print(self.cl.value())
 
         while self.colors[self.cl.value()] != "black":
+            self.r.stop(stop_action="hold")
             self.l.run_forever(speed_sp=self.velocidade)
+            #self.r.run_forever(speed_sp=40)
+            #print(self.cl.value())
 
-        else:
-            self.l.run_forever(speed_sp=self.velocidade)
+        #while
+        #else:
+           # self.r.run_forever(speed_sp=self.velocidade)
 
         #atualizando sentido
         if self.sentido == 'N':
@@ -246,10 +324,17 @@ class Robo:
             self.sentido = 'N'
 
         self.moverFrente()
+        self.parado = True
 
+    def getGoal(self):
+        return str(self.goal)
 
+    def getTreasure(self):
+        return self.treasure
 
     def moverRetornar(self):
+        self.parado = False
+        print("Retornando")
         self.cl.mode = 'COL-COLOR'
         while self.colors[self.cl.value()] == "green":
             self.l.run_forever(speed_sp=-self.velocidade)
@@ -271,5 +356,5 @@ class Robo:
             self.sentido = 'L'
         elif self.sentido == 'L':
             self.sentido = 'O'
-
+        self.parado = True
         self.moverFrente()
