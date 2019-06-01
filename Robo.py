@@ -24,7 +24,6 @@ class Robo(threading.Thread):
         self.parado = True
         self.estounacaca = False
         self.goal = 0
-
         self.setPausar()
 
     def getGoal(self):
@@ -65,20 +64,13 @@ class Robo(threading.Thread):
         elif comando in 'Vv':
             self.obterCaca()
 
-    # #deve-se finalizar esta def
+    #Isso aqui eh aqui mesmo?
     def obterCaca(self):
         self.estounacaca = True
-        #coord = self.posX, self.posY
-        #if coord in self.lcaca:
-            #pass
-            #Aqui o robo deve enviar uma msg para SS informando que encontrou uma caça
-            #aqui o robo deve usar uma função desta classe para enviar a msg
-            #esta funcao de enviar msg ainda n foi criada
 
+    #isso aqui eh aqui mesmo?
     def atualizarMapa(self):
-
-        pass#     #enviar coord do robo
-        #verificar se a caça que esta sendo procurada ainda n foi caçada
+        pass
 
     def getId(self):
         return self.id
