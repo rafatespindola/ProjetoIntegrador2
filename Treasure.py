@@ -12,31 +12,29 @@ class Treasure:
 
     #usei tal funcao em SistemaRobo linha 115
     def removeCaca(self, alvo):
-        self.l1.remove(alvo)    #remove a caca alvo
-        self.lcacas = ''        #esvazia a lcacas
-        for i in self.l1:       #traduz a lista em string
-            self.lcacas = self.lcacas + ';' + self.l1[i]
+        self.l1.remove(alvo)             #remove a caca alvo
+        self.lcacas = ';'.join(self.l1)  # traduz ed lista para string separando por ';'
 
     #Remove de self.l1 a caca mais proxima e a retorna
     def getCloserTarget(self, posRobo):
-        #Exmplo posRobo -> '6:4' ou '2:0' ou '1:3' ou '5:5'...
-        rbx = int(posRobo[0])# 3
-        rby = int(posRobo[2])# 4
+        #Exemplo posRobo -> '6:4' ou '2:0' ou '1:3' ou '5:5'...
+        rbx = int(posRobo[0])
+        rby = int(posRobo[2])
 
         #pega primeiro elemento da lista para poder comparar com outros elementos
-        closer = self.l1[0]  #'2:4'
-        clx = int(closer[0]) # 2
-        cly = int(closer[2]) # 4
+        closer = self.l1[0]
+        clx = int(closer[0])
+        cly = int(closer[2])
 
         # compara e acha a caca mais proxima
         for i in self.l1:
-            tex = int(i[0]) #2
-            tey = int(i[2]) #4
-            # 2 < 3
+            tex = int(i[0])
+            tey = int(i[2])
+
             if abs(rbx-tex) + abs(rby-tey) < abs(rbx-clx) + abs(rby-cly):
                 closer = str(tex) + ':' + str(tey) #'3:4'
-                clx = int(closer[0]) # 3
-                cly = int(closer[2]) # 4
+                clx = int(closer[0])
+                cly = int(closer[2])
 
         self.l1.remove(closer)
         return closer
@@ -46,14 +44,14 @@ class Treasure:
     def ordenaListaCaca(self, posRobo):
         ordenada = []
         loop = range(len(self.l1))
-        for i in loop: #3
+        for i in loop:
             if i == 0:
                 ordenada.append(self.getCloserTarget(posRobo))
             else:
                 ordenada.append(self.getCloserTarget(ordenada[i-1]))
 
         self.l1 = ordenada
-        self.lcacas = ';'.join(self.l1) # transforma a lista em string. Elementos separados por ponto-e-virgula
+        self.lcacas = ';'.join(self.l1) # traduz lista em string. Elementos separados por ponto-e-virgula
 
 
 
