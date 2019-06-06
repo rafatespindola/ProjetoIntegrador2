@@ -71,9 +71,9 @@ class Communication(threading.Thread):
         messagedata = messagedata.split(',')
         if messagedata[1] in 'WASDVwasdv':
             self.commandlist.append(messagedata[1])
-        elif messagedata[0] == 'cacas'
+        elif messagedata[0] == 'cacas':
             self.configlist.append("@"+ messagedata[1])
-        elif(messagedata[0].startswith(('mac', 'cor', 'modo', 'ack', 'posin'))):
+        elif(messagedata[0] in ('mac', 'cor', 'modo', 'ack', 'posin')):
             self.configlist.append(messagedata[1])
         else:
             self.attlist.append(messagedata[1])
