@@ -55,7 +55,7 @@ def interface(mode, sendSR):
 
 modo = "modo,automatico"
 cor = "cor,azul"
-local = "cacas,0:0;1:1;2:2;1:1"
+local = "cacas,1:1;2:2;1:1;3:3"
 posin = "posin,0:0"
 
 ### teste lista de caças ###
@@ -66,15 +66,24 @@ send_toSR = Communication("192.168.43.248", "50009",'toSR')
 
 receive_fromSR = Communication("192.168.43.248", "50008", "fromSR")
 
+send_toSA = Communication("127.0.0.1", "50006",'toSA')
+
+receive_fromSA = Communication("127.0.0.1", "50007", "fromSA")
+
 #receivefromSS = Communication('127.0.0.1', "50009", "fromSS")
 interface_t = threading.Thread(target=interface, args=(modo, send_toSR))
 #receive_t = threading.Thread(target=recSS.receiveMessage())
 #send_t = threading.Thread(target=sendSR.sendMessage)
 #atualizarmapa_t = threading.Thread(target=atualizarmapa())
 
+send_toSA.start()
+
+receive_fromSA.start()
+
 send_toSR.start()
 
 receive_fromSR.start()
+
 #ip teles (SR) = 191.36.10.250, porta 7000
 
 
@@ -119,11 +128,28 @@ while (1):
                 send_toSR.send(cor)
                 send_toSR.send(local)
                 send_toSR.send(posin)
-                interface_t.start()
-    else:
+                if(modo == "modo,manual"):
+                    interface_t.start()
+    else: #apos configurar e startar o robo, verificar listas de recebimento
+
+        if (receive_fromSR.getAttlist()):  # recebeu alguma atualizacao
+            pass
+
+        if (receive_fromSR.getConfigList()):  # recebeu alguma config
+            pass
+
+        if(receive_fromSR.getCommandList()):
+            msg = receive_fromSR.popCommandList()
+            if (msg in "vV"):
+                #resp = input("Existe caca na posicao ")
+                send_toSR.send("ack, OK")
+
+        if(receive_fromSA.getAttlist()):
+            listatt = receive_fromSA.popAttlist()
+            send_toSR.send("cacass," + listatt)
         #send_toSR.send("ack,OK")
         #send_toSR.send(local)
-        time.sleep(5)
+        #time.sleep(5)
 
         #break
         #pass

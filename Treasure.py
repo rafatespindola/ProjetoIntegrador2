@@ -10,10 +10,9 @@ class Treasure:
     def getString(self):
         return self.lcacas
 
-    #usei tal funcao em SistemaRobo linha 115
     def removeCaca(self, alvo):
         self.l1.remove(alvo)             #remove a caca alvo
-        self.lcacas = ';'.join(self.l1)  # traduz ed lista para string separando por ';'
+        self.lcacas = ';'.join(self.l1)  #traduz de lista para string separando por ';'
 
     #Remove de self.l1 a caca mais proxima e a retorna
     def getCloserTarget(self, posRobo):
@@ -36,11 +35,12 @@ class Treasure:
                 clx = int(closer[0])
                 cly = int(closer[2])
 
-        self.l1.remove(closer)
+        if closer in self.l1:
+            self.l1.remove(closer)
         return closer
 
     # Ordena as cacas da melhor maneira para se busca-las
-    # Atualiza self.l1 e também já arruma a string self.lcacas
+    # Atualiza self.l1 e tambem ja arruma a string self.lcacas
     def ordenaListaCaca(self, posRobo):
         ordenada = []
         loop = range(len(self.l1))
@@ -52,6 +52,7 @@ class Treasure:
 
         self.l1 = ordenada
         self.lcacas = ';'.join(self.l1) # traduz lista em string. Elementos separados por ponto-e-virgula
-
-
-
+    def popTreasure(self):
+        a =  self.l1.pop()
+        self.lcacas = ';'.join(self.l1)
+        return a

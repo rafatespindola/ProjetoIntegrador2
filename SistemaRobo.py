@@ -69,57 +69,73 @@ while(confRobo != 2):
 print("ROBO CONFIGURADO")
 
 #instancia Robo
-robot = Robo(100, cor, modo, "N", posin, strcacas)
+robot = Robo(150, cor, modo, "N", posin, strcacas)
 
 j = 0
-#robot.start()
-#lista temporaria
 while(1):
-    #if parado
-    #send_toSS(posicao)
-
-    #if estou em uma caca
-    #send_toSS(posicao) set_Estounacaa = false
-
     if(modo == "manual"):
-        #robot.start()
-        while(receive_fromSS.getCommandList()):
-            comando = receive_fromSS.popCommandList()
-            robot.command(comando)
+        while(1):
+            while(receive_fromSS.getCommandList()):
+                comando = receive_fromSS.popCommandList()
+                robot.command(comando)
+                if(comando in "vV"):
+                    send_toSS.send("V")
+
     else: # automatico
         if (j == 0):
             robot.start()
             j = j + 1
-        else:
-            if(receive_fromSS.getAttlist()):
+        else: #verificar sempre as listas de recebimento: attlist,configlist,commandlist
+
+            if(receive_fromSS.getCommandList()): #recebeu algum comando
+                pass
+
+            if(receive_fromSS.getConfigList()): #recebeu alguma config
+                pass
+
+            if(receive_fromSS.getAttlist()): #recebeu atualizacao
                 lista = receive_fromSS.popAttlist()
                 robot.setLista(lista)
             #se for diferente robot.setLcacas(getlistadecacas)
 
-        if(robot.isParado()):
-            send_toSS.send(robot.getPos())
-            time.sleep(1)
+        #if(robot.isParado()):
+            #send_toSS.send("att," + robot.getPos())
+            #time.sleep(1)
 
-        if(not str(robot.getGoal()) in robot.getTreasure().getString() and robot.isParado()):
-                robot.setPausar() #pausa o robo
-                robot.stop()      #pausa a thread
-                robot.start()     #reinicia a thread com a lista atualizada
-
-        if(robot.isNacaca()):
-            send_toSS.send("v" + robot.getPos())
-            while(not receive_fromSS.getConfigList()):
-                time.sleep(1)
-            else:
+        #if(not str(robot.getGoal()) in robot.getTreasure().getString() and robot.isParado()):
+         #       robot.setPausar() #pausa o robo
+          #      robot.join()#pausa a thread
+           #     robot.start()     #reinicia a thread com a lista atualizada
+                #robot.moverAutomatico()
+        #print ("to aqui")
+        while(robot.isNacaca()):
+            robot.setMatar(True)
+            #robot.setPausar()
+            print("ESTOU NA CACA")
+            #robot.join()
+            send_toSS.send("c,v") # + robot.getPos())
+            if(receive_fromSS.getConfigList()):
                 resp = receive_fromSS.popConfigList()
-                if(resp == "OK"):
-                    #robot.getTreasure().removeCaca(robot.getPos())
-                    pass #tirar da lista de caças
+                if (resp == "OK"):
+                    print("Recebido OK")
+                    robot.setMatar(False)
+                    robot.setNacaca(False)
+                    teste = robot.getTreasure()
+                    teste.removeCaca(robot.getGoal())
+                    robot.setLista(teste.getString())
+                    print(robot.getTreasure().getString())
+                    #robot.getTreasure().removeCaca(robot.getGoal())
+                    #robot.start()
+            else:
+                time.sleep(3)
+                send_toSS.send("c,v")
+                print("nao recebeu ok")
 
-                else:
-                    pass #Nao existe caça na posicao que esta
+        #print("nao existe caca nessa posicao")
+                 #   pass #Nao existe caça na posicao que esta
 
 
-        pass#robot.start()
+       # pass#robot.start()
 
 
 
